@@ -47,7 +47,7 @@ def generate(n, r):
         text = transform(small_list)
         ans = calculate(text)
 
-        while ans < 0 or ans > r:
+        while ans < 0 or ans > r or ans.denominator > r:
             small_list = generate_loop(r)
             text = transform(small_list)
             ans = calculate(text)
@@ -57,6 +57,7 @@ def generate(n, r):
                     list_2 = paixu(l[j][3:6])
                     if list_1 == list_2:
                         ans = -1
+            
         small_list.append(text)
         small_list.append(ans)
 
@@ -67,6 +68,6 @@ def generate(n, r):
 def paixu(l: list):
     for i in range(1, len(l)):
         for j in range(1, len(l)-i):
-            if l[j][11] > l[j+1][11]:
+            if l[j] > l[j+1]:
                 l[j], l[j+1] = l[j+1], l[j]
     return l
