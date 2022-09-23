@@ -6,7 +6,7 @@ from random import randint
 from fractions import Fraction
 
 from generater import generate
-
+from transformer import fraction2str
 
 a = sys.argv
 
@@ -15,47 +15,51 @@ signs = ['+', '−', '×', '÷']
 
 # 参数检查
 def parameter_check(a):
-    n=10
-    if len(a)==3:
-        if a[1]!='-r':
+    n = 10
+    if len(a) == 3:
+        if a[1] != '-r':
             return -1
-        r=re.sub(r'\D', '', a[2])
-        if r=='':
+        r = re.sub(r'\D', '', a[2])
+        if r == '':
             return -1
         else:
-            r=int(r)
-    elif len(a)==5:
-        if a[1]=='-n' and a[3]=='-r':
-            n=re.sub(r'\D', '', a[2])
-            r=re.sub(r'\D', '', a[4])
-            if n=='' or r=='':
+            r = int(r)
+    elif len(a) == 5:
+        if a[1] == '-n' and a[3] == '-r':
+            n = re.sub(r'\D', '', a[2])
+            r = re.sub(r'\D', '', a[4])
+            if n == '' or r == '':
                 return -1
             else:
-                n=int(n)
-                r=int(r)
-        elif a[1]=='-r' and a[3]=='-n':
-            n=re.sub(r'\D', '', a[4])
-            r=re.sub(r'\D', '', a[2])
-            if n=='' or r=='':
+                n = int(n)
+                r = int(r)
+        elif a[1] == '-r' and a[3] == '-n':
+            n = re.sub(r'\D', '', a[4])
+            r = re.sub(r'\D', '', a[2])
+            if n == '' or r == '':
                 return -1
             else:
-                n=int(n)
-                r=int(r)
+                n = int(n)
+                r = int(r)
         else:
             return -1
-    return n,r
+    return n, r
+
 
 def output(l: list):
     text = ''
     for i in range(1, l[0][0]+1):  # n
         text = text+'%d. ' % i  # 序号
         text = text+l[i][10]  # 题目
-        text = text + ' = %s\n'  % str(l[i][11])  # 答案
-        # 等号和换行
+        text = text + ' =\n'  # 等号和换行
 
+    ans_text = ''
+    for i in range(1, l[0][0]+1):  # n
+        ans_text = ans_text+'%d. ' % i  # 序号
+        ans_text = ans_text+fraction2str(l[i][11])  # 答案
+        ans_text = ans_text + '\n'  # 换行
 
-    
-    return text
+    return text, ans_text
 
 
 def main(a):
@@ -67,4 +71,6 @@ if __name__ == '__main__':
     r = 10
 
     list_0 = generate(n, r)
-    print(output(list_0))
+    text, ans_text = output(list_0)
+    print(text)
+    print(ans_text)

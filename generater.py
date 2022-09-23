@@ -3,6 +3,7 @@ from fractions import Fraction
 from transformer import transform
 from calculater import calculate
 
+
 def generate_loop(r):
     # 空列表
     small_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -36,18 +37,36 @@ def generate_loop(r):
     return small_list
 
 # 运算符数量（0），括号位置（1~2），运算符是什么（3~5），运算数（6~9），字符串（10），答案（11），空的补零
+
+
 def generate(n, r):
-    l = [[n,r]]
+    l = [[n, r]]
+
     for i in range(n):
         small_list = generate_loop(r)
         text = transform(small_list)
         ans = calculate(text)
-        while ans<0 or ans>r:
+
+        while ans < 0 or ans > r:
             small_list = generate_loop(r)
             text = transform(small_list)
             ans = calculate(text)
+            for j in range(1, i): # 检查是否重复
+                if ans == l[j][11]:
+                    list_1 = paixu(small_list[3:6])
+                    list_2 = paixu(l[j][3:6])
+                    if list_1 == list_2:
+                        ans = -1
         small_list.append(text)
         small_list.append(ans)
-        
+
         l.append(small_list)
+    return l
+
+
+def paixu(l: list):
+    for i in range(1, len(l)):
+        for j in range(1, len(l)-i):
+            if l[j][11] > l[j+1][11]:
+                l[j], l[j+1] = l[j+1], l[j]
     return l
