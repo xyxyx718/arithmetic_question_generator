@@ -45,21 +45,17 @@ def parameter_check(a):
             return -1
     return n,r
 
-
-
-
-
-
-
 def output(l: list):
     text = ''
     for i in range(1, l[0][0]+1):  # n
         text = text+'%d. ' % i  # 序号
         text = text+l[i][10]  # 题目
-        text = text + ' = \n'  # 等号和换行
+        text = text + ' = %s\n'  % str(l[i][11])  # 答案
+        # 等号和换行
 
+
+    
     return text
-
 
 
 def main(a):
