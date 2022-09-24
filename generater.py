@@ -39,7 +39,7 @@ def generate_loop(r):
 # 运算符数量（0），括号位置（1~2），运算符是什么（3~5），运算数（6~9），字符串（10），答案（11），空的补零
 
 
-def generate(n, r):
+def generate(n: int, r: int):
     l = [[n, r]]
 
     for i in range(n):
@@ -51,13 +51,13 @@ def generate(n, r):
             small_list = generate_loop(r)
             text = transform(small_list)
             ans = calculate(text)
-            for j in range(1, i): # 检查是否重复
+            for j in range(1, i):  # 检查是否重复
                 if ans == l[j][11]:
                     list_1 = paixu(small_list[3:6])
                     list_2 = paixu(l[j][3:6])
                     if list_1 == list_2:
                         ans = -1
-            
+
         small_list.append(text)
         small_list.append(ans)
 

@@ -49,10 +49,15 @@ def parameter_check(a):
         l = [-1]
     return l
 
-
-def main():
-    p = parameter_check(sys.argv)
+# 错误代码
+# -1 参数错误
+# -2 文件编码错误或不存在
+# -3 Grade.txt文件无法写入
+# -4 题目数量与答案数量不符
+def main(p):
+    p = parameter_check(p)
     if p[0] == 1:
+        # 生成题目
         n, r = p[1], p[2]
 
         text, ans_text = output(generate(n, r))
@@ -60,14 +65,25 @@ def main():
         write_file(ans_text, 'Answers.txt')
 
     elif p[0] == 2:
+        # 检查答案
         e, a = p[1], p[2]
 
+        # 读取文件
         exercises = read_file(e)
         answer = read_file(a)
+        if (exercises == -1) or (answer == -1):
+            print('文件编码错误或不存在')
+            return -2
 
+        # 格式化
         exercises = re.findall(
             r'\d+\. ([ 0-9\+−×÷’/\(\)]+)=[ \n$]+', exercises)
         answer = re.findall(r'\d+\. ([ 0-9’/]+)[ \n$]+', answer)
+
+        # 判断正误
+        if(len(exercises) != len(answer)):
+            print('题目数量与答案数量不符')
+            return -4
 
         Correct = []
         Wrong = []
@@ -76,7 +92,7 @@ def main():
                 Correct.append(i+1)
             else:
                 Wrong.append(i+1)
-        
+        # 生成文本
         text = 'Correct: %d' % len(Correct)
         for i in range(len(Correct)):
             if i == 0:
@@ -96,14 +112,21 @@ def main():
             else:
                 text = text+')'
 
-        write_file(text, 'Grade.txt')
+        # 写入文件
+        if write_file(text, 'Grade.txt') < 0:
+            print('Grade.txt文件无法写入')
+            return -3 # Grade.txt文件无法写入
 
     else:
-        print('Parameter Error')
-        return -1
+        print('参数错误!')
+        print('正确格式：Myapp.exe -n a -r b')
+        print('其中a为题目数量，b为题目中数值的范围')
+        print('或：Myapp.exe -e a.txt -a b.txt')
+        print('其中a.txt为题目文件，b.txt为答案文件')
+        return -1 # 参数错误
 
     return 0
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)

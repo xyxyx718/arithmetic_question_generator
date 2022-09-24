@@ -22,6 +22,8 @@ def write_file(text: str, path: str):
             f.write('%s' % text)
     except:
         return -1
+    
+    return 0
 # 文件只读或其他错误
 
 def read_file(path: str):
