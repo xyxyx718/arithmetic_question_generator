@@ -6,71 +6,104 @@ from random import randint
 from fractions import Fraction
 
 from generater import generate
-from transformer import fraction2str
+from calculater import calculate
+from readandwrite import *
 
-a = sys.argv
 
 signs = ['+', '−', '×', '÷']
 
 
 # 参数检查
+# l[0] 1→nr 2→ea -1→error
 def parameter_check(a):
-    n = 10
+    n = 10  # 题目数量 默认10
     if len(a) == 3:
         if a[1] != '-r':
-            return -1
-        r = re.sub(r'\D', '', a[2])
-        if r == '':
-            return -1
-        else:
-            r = int(r)
+            l = [-1]
+        elif re.search(r'\D', a[2]) != None:
+            l = [-1]
+        r = int(a[2])
+        l = [1, n, r]
     elif len(a) == 5:
-        if a[1] == '-n' and a[3] == '-r':
-            n = re.sub(r'\D', '', a[2])
-            r = re.sub(r'\D', '', a[4])
-            if n == '' or r == '':
-                return -1
-            else:
-                n = int(n)
-                r = int(r)
-        elif a[1] == '-r' and a[3] == '-n':
-            n = re.sub(r'\D', '', a[4])
-            r = re.sub(r'\D', '', a[2])
-            if n == '' or r == '':
-                return -1
-            else:
-                n = int(n)
-                r = int(r)
+        if (a[1] == '-n') and (a[3] == '-r'):
+            if re.search(r'\D', a[2]+a[4]) != None:
+                l = [-1]
+            n = int(a[2])
+            r = int(a[4])
+            l = [1, n, r]
+        elif (a[1] == '-r') and (a[3] == '-n'):
+            if re.search(r'\D', a[2]+a[4]) != None:
+                l = [-1]
+            r = int(a[2])
+            n = int(a[4])
+            l = [1, n, r]
+        elif (a[1] == '-e') and (a[3] == '-a'):
+            if re.match(r'.*\.txt$', a[2], flags=0) != None:
+                e = a[2]
+            if re.match(r'.*\.txt$', a[4], flags=0) != None:
+                a = a[4]
+            l = [2, e, a]
         else:
-            return -1
-    return n, r
+            l = [-1]
+    else:
+        l = [-1]
+    return l
 
 
-def output(l: list):
-    text = ''
-    for i in range(1, l[0][0]+1):  # n
-        text = text+'%d. ' % i  # 序号
-        text = text+l[i][10]  # 题目
-        text = text + ' =\n'  # 等号和换行
+def main():
+    p = parameter_check(sys.argv)
+    if p[0] == 1:
+        n, r = p[1], p[2]
 
-    ans_text = ''
-    for i in range(1, l[0][0]+1):  # n
-        ans_text = ans_text+'%d. ' % i  # 序号
-        ans_text = ans_text+fraction2str(l[i][11])  # 答案
-        ans_text = ans_text + '\n'  # 换行
+        text, ans_text = output(generate(n, r))
+        write_file(text, 'Exercises.txt')
+        write_file(ans_text, 'Answers.txt')
 
-    return text, ans_text
+    elif p[0] == 2:
+        e, a = p[1], p[2]
 
+        exercises = read_file(e)
+        answer = read_file(a)
 
-def main(a):
-    print(a)
+        exercises = re.findall(
+            r'\d+\. ([ 0-9\+−×÷’/\(\)]+)=[ \n$]+', exercises)
+        answer = re.findall(r'\d+\. ([ 0-9’/]+)[ \n$]+', answer)
+
+        Correct = []
+        Wrong = []
+        for i in range(len(exercises)):
+            if calculate(exercises[i]) == calculate(answer[i]):
+                Correct.append(i+1)
+            else:
+                Wrong.append(i+1)
+        
+        text = 'Correct: %d' % len(Correct)
+        for i in range(len(Correct)):
+            if i == 0:
+                text = text+' ('
+            text = text+'%d' % Correct[i]
+            if i != len(Correct)-1:
+                text = text+', '
+            else:
+                text = text+')'
+        text = text+'\nWrong: %d' % len(Wrong)
+        for i in range(len(Wrong)):
+            if i == 0:
+                text = text+' ('
+            text = text+'%d' % Wrong[i]
+            if i != len(Wrong)-1:
+                text = text+', '
+            else:
+                text = text+')'
+
+        write_file(text, 'Grade.txt')
+
+    else:
+        print('Parameter Error')
+        return -1
+
+    return 0
 
 
 if __name__ == '__main__':
-    n = 10
-    r = 10
-
-    list_0 = generate(n, r)
-    text, ans_text = output(list_0)
-    print(text)
-    print(ans_text)
+    main()
