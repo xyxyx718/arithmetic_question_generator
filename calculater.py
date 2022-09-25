@@ -12,3 +12,4 @@ def calculate(text:str):
     text = re.sub(r'(\d+)', r'Fraction(\1)', text)
 
     return eval(text)
+    # 除以0会报错

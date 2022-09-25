@@ -9,7 +9,7 @@ def fraction2str(fraction):
     else:
         return str(fraction)
 
-
+# 将small_list[0:9]转换为字符串
 def transform(small_list):
     signs = ['+', '−', '×', '÷']
     text = ''
