@@ -54,6 +54,9 @@ def parameter_check(a):
 # -2 文件编码错误或不存在
 # -3 Grade.txt文件无法写入
 # -4 题目数量与答案数量不符
+# -5 所给题目存在除以0错误
+
+
 def main(p):
     p = parameter_check(p)
     if p[0] == 1:
@@ -81,14 +84,19 @@ def main(p):
         answer = re.findall(r'\d+\. ([ 0-9’/]+)[ \n$]+', answer)
 
         # 判断正误
-        if(len(exercises) != len(answer)):
+        if (len(exercises) != len(answer)):
             print('题目数量与答案数量不符')
             return -4
 
         Correct = []
         Wrong = []
         for i in range(len(exercises)):
-            if calculate(exercises[i]) == calculate(answer[i]):
+            ee = calculate(exercises[i])
+            aa = calculate(answer[i])
+            if ee < 0:
+                print('第%d题除以0，题目有误' % (i+1))
+                return -5
+            if ee == aa:
                 Correct.append(i+1)
             else:
                 Wrong.append(i+1)
@@ -115,7 +123,7 @@ def main(p):
         # 写入文件
         if write_file(text, 'Grade.txt') < 0:
             print('Grade.txt文件无法写入')
-            return -3 # Grade.txt文件无法写入
+            return -3  # Grade.txt文件无法写入
 
     else:
         print('参数错误!')
@@ -123,7 +131,7 @@ def main(p):
         print('其中a为题目数量，b为题目中数值的范围')
         print('或：Myapp.exe -e a.txt -a b.txt')
         print('其中a.txt为题目文件，b.txt为答案文件')
-        return -1 # 参数错误
+        return -1  # 参数错误
 
     return 0
 
