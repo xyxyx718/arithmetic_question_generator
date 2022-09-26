@@ -3,7 +3,7 @@ from fractions import Fraction
 
 
 def str2Calculate(text: str):
-# 将字符串中的运算符转为可识别的符号
+    # 将字符串中的运算符转为可识别的符号
     text = text.replace('÷', '/')
     text = text.replace('×', '*')
     text = text.replace('−', '-')
@@ -11,8 +11,8 @@ def str2Calculate(text: str):
 
 
 def calculate2str(text: str):
-# 将字符串中的运算符转为符合格式要求的符号
-    text = text.replace('/', '÷')
+    # 将字符串中的运算符转为符合格式要求的符号
+    text = text.replace(' / ', ' ÷ ')
     text = text.replace('*', '×')
     text = text.replace('-', '−')
     return text
@@ -30,7 +30,7 @@ def improper2proper(text: str):
         else:
             m.append(str(a) + '/' + str(b))
     for i in range(len(n)):
-        text = text.replace(n[i][0] + '/' + n[i][1], m[i])
+        text = text.replace(n[i][0] + '/' + n[i][1], m[i], 1)
     return text
 
 

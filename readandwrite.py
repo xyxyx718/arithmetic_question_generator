@@ -4,28 +4,32 @@ import re
 
 
 def output_format(l: list):
-# 将l中的内容格式化成可以输出到文件的形式
-# 返回2个字符串，
+    # 将l中的内容格式化成可以输出到文件的形式
+    # 返回2个字符串，
     text = ''
     for i in range(1, l[0][0]+1):  # n
-        text = text+'%d. ' % i  # 序号
-        text = text+l[i][10]  # 题目
+        text = text + '%d. ' % i  # 序号
+        question = l[i][10]
+        question = improper2proper(question)
+        question = calculate2str(question)
+        text = text + question  # 题目
         text = text + ' =\n'  # 等号和换行
 
     ans_text = ''
     for i in range(1, l[0][0]+1):  # n
-        ans_text = ans_text+'%d. ' % i  # 序号
+        ans_text = ans_text + '%d. ' % i  # 序号
         # 答案
         ans = l[i][11]
         ans = improper2proper(str(ans))
-        ans_text = ans_text+ ans
+        ans_text = ans_text + ans
         ans_text = ans_text + '\n'  # 换行
 
     return text, ans_text
 
-def input_fromat(text: str,type='e'):
-# 将文件内容格式化成可以计算的形式
-# 返回一个列表
+
+def input_fromat(text: str, type='e'):
+    # 将文件内容格式化成可以计算的形式
+    # 返回一个列表
     text = str2Calculate(text)
     text = proper2improper(text)
     if type == 'e':
@@ -37,15 +41,17 @@ def input_fromat(text: str,type='e'):
     else:
         return -1
 
+
 def write_file(text: str, path: str):
     try:
         with open(r'%s' % path, mode='w', encoding='utf-8') as f:
             f.write('%s' % text)
     except:
         return -1
-    
+
     return 0
 # 文件只读或其他错误
+
 
 def read_file(path: str):
     # 读取文件
@@ -58,5 +64,5 @@ def read_file(path: str):
                 text = f.read()
         except:
             return -1
-    
+
     return text
