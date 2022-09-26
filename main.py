@@ -1,65 +1,64 @@
 # coding:utf-8
 
-import re
 import sys
-from random import randint
 from fractions import Fraction
 
 from generater import generate
 from re_calculater import *
 from readandwrite import *
 
-
 signs = ['+', '−', '×', '÷']
 
 
-
 def parameter_check(a):
-# 参数检查
-# l[0] 1→nr 2→ea -1→error
+    # 参数检查
+    # l[0] 1→nr 2→ea -1→error
     n = 10  # 题目数量 默认10
+    # 2个参数
     if len(a) == 3:
         if a[1] != '-r':
-            l = [-1]
-        elif re.search(r'\D', a[2]) != None:
-            l = [-1]
+            return [-1]
+        elif re.search(r'\D', a[2]) is not None:
+            return [-1]
         r = int(a[2])
-        l = [1, n, r]
+        return [1, n, r]
+    # 4个参数
     elif len(a) == 5:
         if (a[1] == '-n') and (a[3] == '-r'):
-            if re.search(r'\D', a[2]+a[4]) != None:
-                l = [-1]
+            if re.search(r'\D', a[2] + a[4]) is not None:
+                return [-1]
             n = int(a[2])
             r = int(a[4])
-            l = [1, n, r]
+            return [1, n, r]
         elif (a[1] == '-r') and (a[3] == '-n'):
-            if re.search(r'\D', a[2]+a[4]) != None:
-                l = [-1]
+            if re.search(r'\D', a[2] + a[4]) is not None:
+                return [-1]
             r = int(a[2])
             n = int(a[4])
-            l = [1, n, r]
+            return [1, n, r]
         elif (a[1] == '-e') and (a[3] == '-a'):
-            if re.match(r'.*\.txt$', a[2], flags=0) != None:
+            if re.match(r'.*\.txt$', a[2], flags=0) is not None:
                 e = a[2]
-            if re.match(r'.*\.txt$', a[4], flags=0) != None:
+            else:
+                return [-1]
+            if re.match(r'.*\.txt$', a[4], flags=0) is not None:
                 a = a[4]
-            l = [2, e, a]
+            else:
+                return [-1]
+            return [2, e, a]
         else:
-            l = [-1]
+            return [-1]
     else:
-        l = [-1]
-    return l
-
-
+        return [-1]
 
 
 def main(p):
-# 错误代码
-# -1 参数错误
-# -2 文件编码错误或不存在
-# -3 Grade.txt文件无法写入
-# -4 题目数量与答案数量不符
-# -5 所给题目存在除以0错误
+    # 错误代码
+    # -1 参数错误
+    # -2 文件编码错误或不存在
+    # -3 Grade.txt文件无法写入
+    # -4 题目数量与答案数量不符
+    # -5 所给题目存在除以0错误
 
     p = parameter_check(p)
     if p[0] == 1:
@@ -82,46 +81,47 @@ def main(p):
             return -2
 
         # 格式化
-        exercises = input_fromat(exercises,'e')
-        answers = input_fromat(answers,'a')
+        exercises = input_format(exercises, 'e')
+        answers = input_format(answers, 'a')
 
         # 判断正误
-        if (len(exercises) != len(answers)):
+        if len(exercises) != len(answers):
             print('题目数量与答案数量不符')
             return -4
 
-        Correct = []
-        Wrong = []
+        correct = []
+        wrong = []
         for i in range(len(exercises)):
             ee = re_calculate(exercises[i])
             aa = Fraction(answers[i])
-            if ee == None:
-                print('第%d题除以0或出现负数，题目有误' % (i+1))
+            if ee is None:
+                print('第%d题除以0或出现负数，题目有误' % (i + 1))
                 return -5
             if ee == aa:
-                Correct.append(i+1)
+                correct.append(i + 1)
             else:
-                Wrong.append(i+1)
-        
+                wrong.append(i + 1)
+
         # 生成文本
-        text = 'Correct: %d' % len(Correct)
-        for i in range(len(Correct)):
+        text = 'Correct: %d' % len(correct)
+        for i in range(len(correct)):
             if i == 0:
-                text = text+' ('
-            text = text+'%d' % Correct[i]
-            if i != len(Correct)-1:
-                text = text+', '
+                text = text + ' ('
+            text = text + '%d' % correct[i]
+            if i != len(correct) - 1:
+                text = text + ', '
             else:
-                text = text+')'
-        text = text+'\nWrong: %d' % len(Wrong)
-        for i in range(len(Wrong)):
+                text = text + ')'
+        
+        text = text + '\nWrong: %d' % len(wrong)
+        for i in range(len(wrong)):
             if i == 0:
-                text = text+' ('
-            text = text+'%d' % Wrong[i]
-            if i != len(Wrong)-1:
-                text = text+', '
+                text = text + ' ('
+            text = text + '%d' % wrong[i]
+            if i != len(wrong) - 1:
+                text = text + ', '
             else:
-                text = text+')'
+                text = text + ')'
 
         # 写入文件
         if write_file(text, 'Grade.txt') < 0:

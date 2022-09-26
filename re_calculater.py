@@ -2,7 +2,7 @@ import re
 from fractions import Fraction
 
 
-def str2Calculate(text: str):
+def str2calculate(text: str):
     # 将字符串中的运算符转为可识别的符号
     text = text.replace('÷', '/')
     text = text.replace('×', '*')
@@ -59,7 +59,7 @@ def re_calculate(text: str):
 
     # 匹配仅有2个运算数的表达式
     # 包含开头和末尾的括号
-    n = re.match(r'^\(*\d+(/\d+)? [\+\-\*/] \d+(/\d+)?\)*$', text)
+    n = re.match(r'^\(*\d+(/\d+)? [+\-*/] \d+(/\d+)?\)*$', text)
     if n:
         # 将分数转换为可被eval()计算的形式
         # 分数
@@ -81,55 +81,39 @@ def re_calculate(text: str):
 
     # 匹配括号
     # 计算括号内的数值，并替换回原字符串
-    n = re.search(r'\((.*\d+ [\+\-\*/] \d+.*)\)', text)
+    n = re.search(r'\((.*\d+ [+\-*/] \d+.*)\)', text)
     while n:
         # 计算时不含括号
         brackets = re_calculate(n.group(1))
-        if brackets == None:
+        if brackets is None:
             return None
         # 替换时包含括号（即消除这个括号）
         text = text.replace(n.group(), str(brackets), 1)
-        n = re.search(r'\(.*\d+ [\+\-\*/] \d+.*\)', text)
+        n = re.search(r'\(.*\d+ [+\-*/] \d+.*\)', text)
 
     # 匹配乘除
     # 此时式子中不包含乘除
     # 从左到右计算乘除，并替换回原字符串
     # 此时是在调用re_calculate()中的第一种情况（仅包含两个运算数）
-    n = re.search(r'\d+(/\d+)? [\*/] \d+(/\d+)?', text)
+    n = re.search(r'\d+(/\d+)? [*/] \d+(/\d+)?', text)
     while n:
         multiply = re_calculate(n.group())
-        if multiply == None:
+        if multiply is None:
             return None
         text = text.replace(n.group(), str(multiply), 1)
-        n = re.search(r'\d+(/\d+)? [\*/] \d+(/\d+)?', text)
+        n = re.search(r'\d+(/\d+)? [*/] \d+(/\d+)?', text)
 
     # 匹配加减
     # 此时式子中不包含括号、乘除
     # 从左到右计算加减，并替换回原字符串
     # 此时是在调用re_calculate()中的第一种情况（仅包含两个运算数）
-    n = re.search(r'\d+(/\d+)? [\+\-] \d+(/\d+)?', text)
+    n = re.search(r'\d+(/\d+)? [+\-] \d+(/\d+)?', text)
     while n:
         add = re_calculate(n.group())
-        if add == None:
+        if add is None:
             return None
         text = text.replace(n.group(), str(add), 1)
-        n = re.search(r'\d+(/\d+)? [\+\-] \d+(/\d+)?', text)
+        n = re.search(r'\d+(/\d+)? [+\-] \d+(/\d+)?', text)
 
     # 返回一个分数结果
     return Fraction(text)
-
-
-def test(s):
-    a = re_calculate(s)
-    print(a)
-    print(improper2proper(str(a)))
-
-
-if __name__ == '__main__':
-    text ='1/3 ÷ 1’1/22'
-    text = proper2improper(text)
-    print(text)
-    text = str2Calculate(text)
-    print(text)
-    ans = re_calculate(text)
-    print(ans)
