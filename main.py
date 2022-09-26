@@ -6,16 +6,17 @@ from random import randint
 from fractions import Fraction
 
 from generater import generate
-from calculater import calculate
+from re_calculater import *
 from readandwrite import *
 
 
 signs = ['+', '−', '×', '÷']
 
 
+
+def parameter_check(a):
 # 参数检查
 # l[0] 1→nr 2→ea -1→error
-def parameter_check(a):
     n = 10  # 题目数量 默认10
     if len(a) == 3:
         if a[1] != '-r':
@@ -49,6 +50,10 @@ def parameter_check(a):
         l = [-1]
     return l
 
+
+
+
+def main(p):
 # 错误代码
 # -1 参数错误
 # -2 文件编码错误或不存在
@@ -56,14 +61,12 @@ def parameter_check(a):
 # -4 题目数量与答案数量不符
 # -5 所给题目存在除以0错误
 
-
-def main(p):
     p = parameter_check(p)
     if p[0] == 1:
         # 生成题目
         n, r = p[1], p[2]
 
-        text, ans_text = output(generate(n, r))
+        text, ans_text = output_format(generate(n, r))
         write_file(text, 'Exercises.txt')
         write_file(ans_text, 'Answers.txt')
 
@@ -79,9 +82,8 @@ def main(p):
             return -2
 
         # 格式化
-        exercises = re.findall(
-            r'\d+\. ([ 0-9\+−×÷’/\(\)]+)=[ \n$]+', exercises)
-        answer = re.findall(r'\d+\. ([ 0-9’/]+)[ \n$]+', answer)
+        exercises = input_fromat(exercises,'e')
+        answer = input_fromat(answer,'a')
 
         # 判断正误
         if (len(exercises) != len(answer)):
@@ -91,10 +93,10 @@ def main(p):
         Correct = []
         Wrong = []
         for i in range(len(exercises)):
-            ee = calculate(exercises[i])
-            aa = calculate(answer[i])
+            ee = re_calculate(exercises[i])
+            aa = re_calculate(answer[i])
             if ee < 0:
-                print('第%d题除以0，题目有误' % (i+1))
+                print('第%d题除以0或出现负数，题目有误' % (i+1))
                 return -5
             if ee == aa:
                 Correct.append(i+1)

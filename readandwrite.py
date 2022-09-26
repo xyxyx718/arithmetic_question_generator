@@ -1,7 +1,11 @@
-from transformer import fraction2str
+from re_calculater import calculate2str, improper2proper
+from re_calculater import str2Calculate, proper2improper
+import re
 
 
-def output(l: list):
+def output_format(l: list):
+# 将l中的内容格式化成可以输出到文件的形式
+# 返回2个字符串，
     text = ''
     for i in range(1, l[0][0]+1):  # n
         text = text+'%d. ' % i  # 序号
@@ -11,10 +15,27 @@ def output(l: list):
     ans_text = ''
     for i in range(1, l[0][0]+1):  # n
         ans_text = ans_text+'%d. ' % i  # 序号
-        ans_text = ans_text+fraction2str(l[i][11])  # 答案
+        # 答案
+        ans = l[i][11]
+        ans = improper2proper(str(ans))
+        ans_text = ans_text+ ans
         ans_text = ans_text + '\n'  # 换行
 
     return text, ans_text
+
+def input_fromat(text: str,type='e'):
+# 将文件内容格式化成可以计算的形式
+# 返回一个列表
+    text = str2Calculate(text)
+    text = proper2improper(text)
+    if type == 'e':
+        exercises = re.findall(r'\d+\. ([ 0-9\+\-\*\/\(\)]+)=[ \n$]+', text)
+        return exercises
+    elif type == 'a':
+        answer = re.findall(r'\d+\. ([ 0-9/]+)[ \n$]+', text)
+        return answer
+    else:
+        return -1
 
 def write_file(text: str, path: str):
     try:
