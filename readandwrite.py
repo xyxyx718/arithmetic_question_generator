@@ -30,14 +30,18 @@ def output_format(l: list):
 def input_fromat(text: str, type='e'):
     # 将文件内容格式化成可以计算的形式
     # 返回一个列表
-    text = str2Calculate(text)
-    text = proper2improper(text)
     if type == 'e':
-        exercises = re.findall(r'\d+\. ([ 0-9\+\-\*\/\(\)]+)=[ \n$]+', text)
+        exercises = re.findall(r'\d+\. ([ 0-9\+−×÷/’\(\)]+)=[ \n$]+', text)
+        for i in range(len(exercises)):
+            exercises[i] = str2Calculate(exercises[i])
+            exercises[i] = proper2improper(exercises[i])
         return exercises
     elif type == 'a':
-        answer = re.findall(r'\d+\. ([ 0-9/]+)[ \n$]+', text)
-        return answer
+        answers = re.findall(r'\d+\. ([ 0-9/’]+)[ \n$]+', text)
+        for i in range(len(answers)):
+            answers[i] = str2Calculate(answers[i])
+            answers[i] = proper2improper(answers[i])
+        return answers
     else:
         return -1
 

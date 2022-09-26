@@ -126,11 +126,10 @@ def test(s):
 
 
 if __name__ == '__main__':
-    s = '(8 / 1/10 - (3 + 4) * 10) / 3'
-    test(s)
-    s = '1/2 + 1/3'
-    test(s)
-    s = '1/2 + 1/3 + 1/4'
-    test(s)
-    s = '(1/2 + 1/3)'
-    test(s)
+    text ='1/3 ÷ 1’1/22'
+    text = proper2improper(text)
+    print(text)
+    text = str2Calculate(text)
+    print(text)
+    ans = re_calculate(text)
+    print(ans)

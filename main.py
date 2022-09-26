@@ -76,17 +76,17 @@ def main(p):
 
         # 读取文件
         exercises = read_file(e)
-        answer = read_file(a)
-        if (exercises == -1) or (answer == -1):
+        answers = read_file(a)
+        if (exercises == -1) or (answers == -1):
             print('文件编码错误或不存在')
             return -2
 
         # 格式化
         exercises = input_fromat(exercises,'e')
-        answer = input_fromat(answer,'a')
+        answers = input_fromat(answers,'a')
 
         # 判断正误
-        if (len(exercises) != len(answer)):
+        if (len(exercises) != len(answers)):
             print('题目数量与答案数量不符')
             return -4
 
@@ -94,14 +94,15 @@ def main(p):
         Wrong = []
         for i in range(len(exercises)):
             ee = re_calculate(exercises[i])
-            aa = re_calculate(answer[i])
-            if ee < 0:
+            aa = Fraction(answers[i])
+            if ee == None:
                 print('第%d题除以0或出现负数，题目有误' % (i+1))
                 return -5
             if ee == aa:
                 Correct.append(i+1)
             else:
                 Wrong.append(i+1)
+        
         # 生成文本
         text = 'Correct: %d' % len(Correct)
         for i in range(len(Correct)):
