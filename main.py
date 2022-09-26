@@ -52,7 +52,7 @@ def parameter_check(a):
         return [-1]
 
 
-def main(p):
+def main(a):
     # 错误代码
     # -1 参数错误
     # -2 文件编码错误或不存在
@@ -60,7 +60,7 @@ def main(p):
     # -4 题目数量与答案数量不符
     # -5 所给题目存在除以0错误
 
-    p = parameter_check(p)
+    p = parameter_check(a)
     if p[0] == 1:
         # 生成题目
         n, r = p[1], p[2]
@@ -68,6 +68,10 @@ def main(p):
         text, ans_text = output_format(generate(n, r))
         write_file(text, 'Exercises.txt')
         write_file(ans_text, 'Answers.txt')
+
+        print('生成题目成功！')
+        print('题目已保存至Exercises.txt')
+        print('答案已保存至Answers.txt')
 
     elif p[0] == 2:
         # 检查答案
@@ -112,7 +116,7 @@ def main(p):
                 text = text + ', '
             else:
                 text = text + ')'
-        
+
         text = text + '\nWrong: %d' % len(wrong)
         for i in range(len(wrong)):
             if i == 0:
@@ -125,14 +129,15 @@ def main(p):
 
         # 写入文件
         if write_file(text, 'Grade.txt') < 0:
-            print('Grade.txt文件无法写入')
+            print('Grade.txt文件无法写入！')
             return -3  # Grade.txt文件无法写入
+        print('结果已成功写入到Grade.txt文件！')
 
     else:
         print('参数错误!')
-        print('正确格式：Myapp.exe -n a -r b')
+        print('正确格式：%s -n a -r b' % a[0])
         print('其中a为题目数量，b为题目中数值的范围')
-        print('或：Myapp.exe -e a.txt -a b.txt')
+        print('或：%s -e a.txt -a b.txt' % a[0])
         print('其中a.txt为题目文件，b.txt为答案文件')
         return -1  # 参数错误
 
