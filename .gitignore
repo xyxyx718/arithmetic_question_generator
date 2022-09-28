@@ -1,4 +1,11 @@
+.gitignore
 /.idea
-/homework
 /test.py
 /venv
+/__pycache__
+Exercises.txt
+Answers.txt
+Grade.txt
+/pycharm快照
+/txt存档
+/build
